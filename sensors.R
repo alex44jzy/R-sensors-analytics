@@ -110,3 +110,12 @@ ggplot(data_all, aes(x=factor(hour), y=Light, fill=factor(month))) +
   theme(plot.title = element_text(hjust = 0.5))
 
 
+## light using time during the building's closing time
+ab_light = data_all[which(data_all$Light %in% boxplot(Light~hour, data = data_all)$out),]
+ab_light %>%
+  filter(hour > 2 & hour < 16) %>%
+  ggplot(aes(x = date)) + 
+  geom_bar() +
+  labs(y = "Minutes", title = "Abnormal Light Duration per Day (from 2am-3pm)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
