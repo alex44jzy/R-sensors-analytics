@@ -9,10 +9,15 @@ library(reshape2)
 library(magrittr)
 library(lubridate)
 library(rlist)
-# test
-# janet
-data_march = read.csv("/Users/alexjzy/Desktop/R-projects/sensor-data-prep/Assignment_Data.csv")
-data_april = read.csv("/Users/alexjzy/Desktop/R-projects/sensor-data-prep/Assignment_Data2.csv")
+
+# initial the repository path to current directory
+repository = getwd()
+DIR = 'data'
+file3 = 'Assignment_Data.csv'
+file4 = 'Assignment_Data2.csv'
+data_march = read.csv(file.path(DIR, file3))
+data_april = read.csv(file.path(DIR, file4))
+
 names(data_march)
 
 data_april %>%
@@ -45,15 +50,12 @@ allDate = unique(data_march$date)
 data_march %>%
   split(.$date) %>%
   
-  
-  
-  
-  # 5. group by sensorId and date to check the missing date
-  summary_mar = data_march %>%
-  group_by(unitid, date) %>%
-  summarise(count = n()) %>%
-  as.data.frame() %>%
-  spread("unitid", "count") 
+# 5. group by sensorId and date to check the missing date
+summary_mar = data_march %>%
+group_by(unitid, date) %>%
+summarise(count = n()) %>%
+as.data.frame() %>%
+spread("unitid", "count") 
 
 summary_mar$sum = summary_mar[, 2:5] %>%
   sapply(function(x) {
