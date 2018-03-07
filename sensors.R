@@ -101,6 +101,12 @@ summary_apr$sum = summary_apr[, 2:5] %>%
   }) %>%
   apply(1, sum)
 
-
+## identify working hours by "Light",boxplot
+## comparision of March & April
+ggplot(data_all, aes(x=factor(hour), y=Light, fill=factor(month))) + 
+  geom_boxplot() + 
+  labs(fill = "Month", x = "Time/Hour", y = "Light/Lux", title = "Light by Hour") +
+  scale_fill_discrete(labels=c("March","April")) +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
