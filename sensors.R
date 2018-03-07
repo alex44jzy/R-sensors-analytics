@@ -10,6 +10,7 @@ library(magrittr)
 library(lubridate)
 library(rlist)
 # test
+# janet
 data_march = read.csv("/Users/alexjzy/Desktop/R-projects/sensor-data-prep/Assignment_Data.csv")
 data_april = read.csv("/Users/alexjzy/Desktop/R-projects/sensor-data-prep/Assignment_Data2.csv")
 names(data_march)
