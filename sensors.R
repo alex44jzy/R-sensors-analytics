@@ -8,7 +8,6 @@ library(tcltk)
 library(reshape2)
 library(magrittr)
 library(lubridate)
-library(rlist)
 
 # initial the repository path to current directory
 repository = getwd()
@@ -44,12 +43,30 @@ data_april[duplicated(df_duplicated), ]
 
 # 4. check missing data
 all_time_seq = unique(data_march$time)
-
 allDate = unique(data_march$date)
 
-data_march %>%
+filterMissingTimer = function(data, times) {
+  missing = times[!times %in% data$time]
+  return (missing)
+}
+missingTimeRecords_march = data_march %>%
   split(.$date) %>%
+  lapply(filterMissingTimer, all_time_seq) 
+missingStat_march = missingTimeRecords_march %>%
+  lapply(function(x) {length(x)})
   
+missingTimeRecords_april = data_april %>%
+  split(.$date) %>%
+  lapply(filterMissingTimer, all_time_seq) 
+missingStat_april= missingTimeRecords_april %>%
+  lapply(function(x) {length(x)})
+
+missingTimeRecords_march # March missing data detail
+missingTimeRecords_april # April missing data detail
+missingStat_march # March missing data summary
+missingStat_april # April missing data summary
+
+
 # 5. group by sensorId and date to check the missing date
 summary_mar = data_march %>%
 group_by(unitid, date) %>%
@@ -68,7 +85,6 @@ summary_apr = data_april %>%
   summarise(count = n()) %>%
   as.data.frame() %>%
   spread("unitid", "count") 
-
 
 summary_apr$sum = summary_apr[, 2:5] %>%
   sapply(function(x) {
