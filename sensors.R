@@ -27,12 +27,21 @@ data_april %>%
 data_march$date_time = ymd_hms(data_march$date_time)
 data_april$date_time = ymd_hms(data_april$date_time)
 
-# 2. add a column named date in the end.
-data_march$date = as.Date(data_march$date_time)
-data_april$date = as.Date(data_april$date_time)
+# 2. add column "date", "time", "month", "weekday" in the end.
+data_march = data_march %>%
+  mutate(date = as.Date(.$date_time)) %>%
+  mutate(time = format(.$date_time, "%H:%M")) %>%
+  mutate(day = weekdays(.$date)) %>%
+  mutate(month = month(.$date)) %>%
+  mutate(hour = hour(.$date_time))
 
-data_march$time = format(data_march$date_time, "%H:%M")
-data_april$time = format(data_april$date_time, "%H:%M")
+data_april = data_april %>%
+  mutate(date = as.Date(.$date_time)) %>%
+  mutate(time = format(.$date_time, "%H:%M")) %>%
+  mutate(day = weekdays(.$date)) %>%
+  mutate(month = month(.$date)) %>%
+  mutate(hour = hour(.$date_time))
+data_all = data.frame(rbind(data_march, data_april))
 
 # 3. check duplicated date and time -- no duplicated
 df_duplicated = data_march[c("unitid", "date_time")]
@@ -91,6 +100,7 @@ summary_apr$sum = summary_apr[, 2:5] %>%
     ifelse(is.na(x), 0, x)
   }) %>%
   apply(1, sum)
+
 
 
 
