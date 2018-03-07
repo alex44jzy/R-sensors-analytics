@@ -30,18 +30,25 @@ data_april$date_time = ymd_hms(data_april$date_time)
 # 2. add column "date", "time", "month", "weekday" in the end.
 data_march = data_march %>%
   mutate(date = as.Date(.$date_time)) %>%
-  mutate(time = format(.$date_time, "%H:%M")) %>%
+  mutate(time = as.factor(format(.$date_time, "%H:%M"))) %>%
   mutate(day = weekdays(.$date)) %>%
   mutate(month = month(.$date)) %>%
-  mutate(hour = hour(.$date_time))
+  mutate(hour = hour(.$date_time)) %>%
+  mutate(isWeekend = weekdays(.$date) == 'Saturday' | weekdays(.$date) == 'Sunday')
 
 data_april = data_april %>%
   mutate(date = as.Date(.$date_time)) %>%
-  mutate(time = format(.$date_time, "%H:%M")) %>%
+  mutate(time = as.factor(format(.$date_time, "%H:%M"))) %>%
   mutate(day = weekdays(.$date)) %>%
   mutate(month = month(.$date)) %>%
-  mutate(hour = hour(.$date_time))
+  mutate(hour = hour(.$date_time)) %>%
+  mutate(isWeekend = weekdays(.$date) == 'Saturday' | weekdays(.$date) == 'Sunday')
 data_all = data.frame(rbind(data_march, data_april))
+
+data_weekday = data_all %>%
+  filter(isWeekend != TRUE)
+data_weekend = data_all %>%
+  filter(isWeekend == TRUE)
 
 # 3. check duplicated date and time -- no duplicated
 df_duplicated = data_march[c("unitid", "date_time")]
@@ -62,18 +69,28 @@ missingTimeRecords_march = data_march %>%
   split(.$date) %>%
   lapply(filterMissingTimer, all_time_seq) 
 missingStat_march = missingTimeRecords_march %>%
-  lapply(function(x) {length(x)})
+  sapply(function(x) {length(x)})
   
 missingTimeRecords_april = data_april %>%
   split(.$date) %>%
   lapply(filterMissingTimer, all_time_seq) 
 missingStat_april= missingTimeRecords_april %>%
-  lapply(function(x) {length(x)})
+  sapply(function(x) {length(x)})
 
-missingTimeRecords_march # March missing data detail
-missingTimeRecords_april # April missing data detail
+missingTimeRecords_march[lapply(missingTimeRecords_march, length) > 0] # March missing data detail
+missingTimeRecords_april[lapply(missingTimeRecords_april, length) > 0] # April missing data detail
 missingStat_march # March missing data summary
 missingStat_april # April missing data summary
+
+ggplot() + 
+  geom_bar(stat = "identity", aes(x = names(missingTimeRecords_march), y = missingStat_march)) + 
+  coord_flip() +
+  labs(x = "Date of March", y = "Missing number", title = "Missing data quantity perday in March")
+
+ggplot() + 
+  geom_bar(stat = "identity", aes(x = names(missingTimeRecords_april), y = missingStat_april)) + 
+  coord_flip() +
+  labs(x = "Date of April", y = "Missing number", title = "Missing data quantity perday in April")
 
 
 # 5. group by sensorId and date to check the missing date
@@ -100,6 +117,21 @@ summary_apr$sum = summary_apr[, 2:5] %>%
     ifelse(is.na(x), 0, x)
   }) %>%
   apply(1, sum)
+
+# findings by alex, 
+data_weekday %>%
+  filter(month == 4 & day == 'Friday') %>%
+  # group_by(unitid, time) %>%
+  # summarise(meanTemp = mean(Temperature),
+  #           meanNos = mean(Noise),
+  #           meanLgt = mean(Light),
+  #           meanCo2 = mean(Co2),
+  #           meanVoc = mean(VOC),
+  #           meanHdt = mean(Humidity)) %>%
+  ggplot(aes(x = time, y = Temperature)) +
+  geom_point(aes(colour = unitid))
+
+
 
 ## identify working hours by "Light",boxplot
 ## comparision of March & April
