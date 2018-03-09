@@ -28,21 +28,35 @@ data_march$date_time = ymd_hms(data_march$date_time)
 data_april$date_time = ymd_hms(data_april$date_time)
 
 # 2. add column "date", "time", "month", "weekday" in the end.
+convertFromTimeToDecimal <- function(time) {
+  timedec = sapply(strsplit(time,":"),
+         function(x) {
+           x <- as.numeric(x)
+           round(x[1]+x[2]/60, 3)
+         }
+  )
+  return (timedec)
+}
+
+
 data_march = data_march %>%
   mutate(date = as.Date(.$date_time)) %>%
-  mutate(time = as.factor(format(.$date_time, "%H:%M"))) %>%
+  mutate(time = format(.$date_time, "%H:%M")) %>%
   mutate(day = weekdays(.$date)) %>%
   mutate(month = month(.$date)) %>%
   mutate(hour = hour(.$date_time)) %>%
+  mutate(timeDec = convertFromTimeToDecimal(.$time)) %>%
   mutate(isWeekend = weekdays(.$date) == 'Saturday' | weekdays(.$date) == 'Sunday')
 
 data_april = data_april %>%
   mutate(date = as.Date(.$date_time)) %>%
-  mutate(time = as.factor(format(.$date_time, "%H:%M"))) %>%
+  mutate(time = format(.$date_time, "%H:%M")) %>%
   mutate(day = weekdays(.$date)) %>%
   mutate(month = month(.$date)) %>%
   mutate(hour = hour(.$date_time)) %>%
+  mutate(timeDec = convertFromTimeToDecimal(.$time)) %>%
   mutate(isWeekend = weekdays(.$date) == 'Saturday' | weekdays(.$date) == 'Sunday')
+
 data_all = data.frame(rbind(data_march, data_april))
 
 data_weekday = data_all %>%
@@ -119,17 +133,45 @@ summary_apr$sum = summary_apr[, 2:5] %>%
   apply(1, sum)
 
 # findings by alex, 
-data_weekday %>%
-  filter(month == 4 & day == 'Friday') %>%
-  # group_by(unitid, time) %>%
+data_all %>%
+  filter(month == 3) %>%
+  # group_by(timeDec, day) %>%
+  # # group_by(unitid, hour) %>%
   # summarise(meanTemp = mean(Temperature),
   #           meanNos = mean(Noise),
   #           meanLgt = mean(Light),
   #           meanCo2 = mean(Co2),
   #           meanVoc = mean(VOC),
   #           meanHdt = mean(Humidity)) %>%
-  ggplot(aes(x = time, y = Temperature)) +
-  geom_point(aes(colour = unitid))
+  ggplot(aes(x = timeDec, y = Co2, fill = factor(unitid))) +
+  geom_point(aes(color = factor(unitid)), size = .3) 
+  # scale_x_continuous(breaks = seq(0, 24), 0.5)
+# geom_smooth(aes(color = factor(day)))
+
+
+data_weekday %>%
+  filter(month == 3) %>%
+  ggplot(aes(x = timeDec, y = Humidity, fill = factor(date))) +
+  geom_point(aes(colour = factor(date)), size = .3) + 
+  scale_x_continuous(breaks = seq(0, 24), 0.5)
+
+
+# noise finding 
+data_weekday %>%
+  filter(month == 3 ) %>%
+  group_by(timeDec) %>%
+  # group_by(unitid, hour) %>%
+  summarise(meanTemp = mean(Temperature),
+            meanNos = mean(Noise),
+            meanLgt = mean(Light),
+            meanCo2 = mean(Co2),
+            meanVoc = mean(VOC),
+            meanHdt = mean(Humidity)) %>%
+  ggplot(aes(x = timeDec, y = meanNos)) +
+  geom_line( size = .3) 
+
+
+# 4.26 humidity 29 and 31
 
 
 
