@@ -71,7 +71,20 @@ data_march[duplicated(df_duplicated), ]
 df_duplicated = data_april[c("unitid", "date_time")]
 data_april[duplicated(df_duplicated), ]
 
-# 4. check missing data
+# 4. summary every day's sensor performance and figure out the missing values
+summary_data_all_sensors = data_all %>%
+  group_by(unitid, date) %>%
+  summarise(count = n()) %>%
+  as.data.frame() %>%
+  spread("unitid", "count")
+summary_data_all_sensors
+
+summary_data_all_sensors$Sum = summary_data_all_sensors[, 2:5] %>%
+  sapply(function(x) {
+    ifelse(is.na(x), 0, x)
+  }) %>%
+  apply(1, sum) 
+
 all_time_seq = unique(data_march$time)
 allDate = unique(data_march$date)
 
@@ -79,60 +92,84 @@ filterMissingTimer = function(data, times) {
   missing = times[!times %in% data$time]
   return (missing)
 }
-missingTimeRecords_march = data_march %>%
+
+missingTimeRecords = data_all %>%
   split(.$date) %>%
   lapply(filterMissingTimer, all_time_seq) 
-missingStat_march = missingTimeRecords_march %>%
-  sapply(function(x) {length(x)})
+missingTimeRecordsByMonth = missingTimeRecords %>%
+  sapply(function(x) length(x))
   
-missingTimeRecords_april = data_april %>%
-  split(.$date) %>%
-  lapply(filterMissingTimer, all_time_seq) 
+missingStat_march = missingTimeRecordsByMonth %>%
+  sapply(function(x) {length(x)})
+
 missingStat_april= missingTimeRecords_april %>%
   sapply(function(x) {length(x)})
 
-missingTimeRecords_march[lapply(missingTimeRecords_march, length) > 0] # March missing data detail
-missingTimeRecords_april[lapply(missingTimeRecords_april, length) > 0] # April missing data detail
 missingStat_march # March missing data summary
 missingStat_april # April missing data summary
 
 ggplot() + 
-  geom_bar(stat = "identity", aes(x = names(missingTimeRecords_march), y = missingStat_march)) + 
+  geom_bar(stat = "identity", aes(x = names(missingStat_march), y = missingStat_march)) + 
   coord_flip() +
   labs(x = "Date of March", y = "Missing number", title = "Missing data quantity perday in March")
 
 ggplot() + 
-  geom_bar(stat = "identity", aes(x = names(missingTimeRecords_april), y = missingStat_april)) + 
+  geom_bar(stat = "identity", aes(x = names(missingStat_april), y = missingStat_april)) + 
   coord_flip() +
   labs(x = "Date of April", y = "Missing number", title = "Missing data quantity perday in April")
 
 
-# 5. group by sensorId and date to check the missing date
-summary_mar = data_march %>%
-group_by(unitid, date) %>%
-summarise(count = n()) %>%
-as.data.frame() %>%
-spread("unitid", "count") 
+##################################### findings #####################################
+# finding
+# air conditions
+data_weekday %>%
+  # filter(month == 3) %>%
+  ggplot(aes(x = timeDec, y = Temperature, fill = factor(date))) +
+  geom_line(aes(color = factor(date)), size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) +
+  labs(x = "Time (24 hour format)", y = "Temperature(Centigrade)", title = "Weekday Temperature versus Time" )
+  
+data_weekday %>%
+  # filter(month == 3) %>%
+  ggplot(aes(x = timeDec, y = Temperature, fill = factor(day))) +
+  # geom_line(aes(color = factor(day)), size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) +
+  geom_smooth(aes(color = factor(day))) +
+  labs(x = "Time (24 hour format)", y = "Temperature(Centigrade)", title = "Weekday Temperature (Smooth Line) versus Time" )
 
-summary_mar$sum = summary_mar[, 2:5] %>%
-  sapply(function(x) {
-    ifelse(is.na(x), 0, x)
-  }) %>%
-  apply(1, sum)
+data_weekend %>%
+  ggplot(aes(x = timeDec, y = Temperature, fill = factor(date))) +
+  geom_line(aes(color = factor(date)), size = .3) +
+  # geom_smooth(aes(color = factor(day))) +
+  scale_x_continuous(breaks = seq(0, 24)) +
+  labs(x = "Time (24 hour format)", y = "Temperature(Centigrade)", title = "Weekend Temperature versus Time" )
 
-summary_apr = data_april %>%
-  group_by(unitid, date) %>%
-  summarise(count = n()) %>%
-  as.data.frame() %>%
-  spread("unitid", "count") 
+data_weekend %>%
+  ggplot(aes(x = timeDec, y = Temperature, fill = factor(day))) +
+  scale_x_continuous(breaks = seq(0, 24)) +
+  geom_smooth(aes(color = factor(day))) +
+  labs(x = "Time (24 hour format)", y = "Temperature(Centigrade)", title = "Weekend Temperature (Smooth Line) versus Time" )
 
-summary_apr$sum = summary_apr[, 2:5] %>%
-  sapply(function(x) {
-    ifelse(is.na(x), 0, x)
-  }) %>%
-  apply(1, sum)
 
-# findings by alex, 
+# Opening hours of the building
+
+data_weekday %>%
+  filter(month == 3) %>%
+  ggplot(aes(x = timeDec, y = Light, fill = factor(date))) +
+  geom_line(aes(color = factor(date))) + 
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Light(lux)", title = "March Weekday Luminance versus Time")
+  
+data_weekday %>%
+  filter(month == 4) %>%
+  filter(date <= '2017-04-14') %>%
+  ggplot(aes(x = timeDec, y = Light, fill = factor(date))) +
+  geom_point(aes(color = factor(date))) + 
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Light(lux)", title = "April Weekday Luminance versus Time")
+
+
+
 data_all %>%
   filter(month == 3) %>%
   # group_by(timeDec, day) %>%
