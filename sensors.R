@@ -8,6 +8,7 @@ library(tcltk)
 library(reshape2)
 library(magrittr)
 library(lubridate)
+library(gridExtra)
 
 # initial the repository path to current directory
 repository = getwd()
@@ -291,7 +292,7 @@ data_weekday %>%
 
 
 ## abnormal values exploration - scatterplot
-library(gridExtra)
+
 scatterplot_Humidity = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Humidity, fill = factor(date))) +
