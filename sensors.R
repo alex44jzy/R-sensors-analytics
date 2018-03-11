@@ -214,7 +214,7 @@ data_weekday %>%
   filter(month == 4) %>%
   ggplot(aes(x = timeDec, y = Noise)) +
   geom_line(aes(color = as.factor(date == '2017-04-14')), size = .3) +
-  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
+  scale_color_discrete(name = "Day type", labels = c("Other weekdays in April", "2017-04-14")) +
   scale_x_continuous(breaks = seq(0, 24)) + 
   labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise on April 14th")
 
@@ -228,12 +228,23 @@ data_weekday %>%
   scale_x_continuous(breaks = seq(0, 24)) + 
   labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise around April 14th")
 
+# ======================================================================================================
+# Abnormal on Apr 16th
+# Noise of 2 monthes March and April versus date
+data_all %>%
+  ggplot(aes(x = date_time, y = Noise)) + 
+  geom_point(aes(color = as.factor(isWeekend)), size = .2) + 
+  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
+  labs(x = "Date", y = "Noise (dB)", title = "Noise versus Date")
+
 # Noise of Apr 16th
 noise_416 = data_all %>%
   filter(date == '2017-04-16') %>%
   ggplot(aes(x = timeDec, y = Noise)) +
   geom_line(size = .3) +
   scale_x_continuous(breaks = seq(0, 24)) + 
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
   labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise on April 16th")
 
 # Temperature of Apr 16th
@@ -242,6 +253,8 @@ temperature_416 = data_all %>%
   ggplot(aes(x = timeDec, y = Temperature)) +
   geom_line(size = .3) +
   scale_x_continuous(breaks = seq(0, 24)) + 
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
   labs(x = "Time (24 hour format)", y = "Temperature (Centigrade)", title = "Temperature on April 16th")
 
 # Humidity of Apr 16th
@@ -250,7 +263,9 @@ humidity_416 = data_all %>%
   ggplot(aes(x = timeDec, y = Humidity)) +
   geom_line(size = .3) +
   scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Humidity", title = "Humidity on April 16th")
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
+  labs(x = "Time (24 hour format)", y = "Humidity (%)", title = "Humidity on April 16th")
 
 # Light of Apr 16th
 light_416 = data_all %>%
@@ -258,6 +273,8 @@ light_416 = data_all %>%
   ggplot(aes(x = timeDec, y = Light)) +
   geom_line(size = .3) +
   scale_x_continuous(breaks = seq(0, 24)) + 
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
   labs(x = "Time (24 hour format)", y = "Light (lux)", title = "Light on April 16th")
 
 # Co2 of Apr 16th
@@ -266,22 +283,39 @@ co2_416 = data_all %>%
   ggplot(aes(x = timeDec, y = Co2)) +
   geom_line(size = .3) +
   scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Co2", title = "Co2 on April 16th")
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
+  labs(x = "Time (24 hour format)", y = "Co2 (ppm)", title = "Co2 on April 16th")
 
-# Noise of 2 monthes March and April versus date
-data_all %>%
-  ggplot(aes(x = date_time, y = Noise)) + 
-  geom_point(aes(color = as.factor(isWeekend)), size = .2) + 
-  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
-  labs(x = "Date", y = "Noise (dB)", title = "Noise versus Date")
+# VOC of Apr 16th
+voc_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Co2)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  geom_vline(xintercept = 6, color = "red") +
+  geom_vline(xintercept = 9, color = "red") +
+  labs(x = "Time (24 hour format)", y = "VOC (ppm)", title = "VOC on April 16th")
 
+# combine 6 subplots into one grid.
+grid.arrange(noise_416, temperature_416, humidity_416, light_416, co2_416, voc_416, ncol = 3, nrow = 2)
+
+
+# ======================================================================================================
 # Light on March and April points plot
 data_all %>%
   # filter(month == 4) %>%
   ggplot(aes(x = date_time, y = Light)) +
-  geom_point(aes(color = as.factor(month)), size = .5) + 
-  scale_color_discrete(name = "Month", labels = c("March", "April")) +
-  labs(x = "Date", y = "Light (lux)", title = "Weekday Luminance versus Date")
+  geom_point(aes(color = as.factor(isWeekend)), size = .5) + 
+  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
+  labs(x = "Date", y = "Light (lux)", title = "Luminance versus Date in March and April")
+
+data_all %>%
+  filter(date == "2017-03-11") %>%
+  ggplot(aes(x = timeDec, y = Light)) +
+  geom_point() 
+
+
 
 # findings
 # sensor locations different 4.26 humidity between different sensors
