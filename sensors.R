@@ -98,25 +98,11 @@ missingTimeRecords = data_all %>%
   lapply(filterMissingTimer, all_time_seq) 
 missingTimeRecordsByMonth = missingTimeRecords %>%
   sapply(function(x) length(x))
-  
-missingStat_march = missingTimeRecordsByMonth %>%
-  sapply(function(x) {length(x)})
-
-missingStat_april= missingTimeRecords_april %>%
-  sapply(function(x) {length(x)})
-
-missingStat_march # March missing data summary
-missingStat_april # April missing data summary
 
 ggplot() + 
-  geom_bar(stat = "identity", aes(x = names(missingStat_march), y = missingStat_march)) + 
+  geom_bar(stat = "identity", aes(x = names(missingTimeRecordsByMonth), y = missingTimeRecordsByMonth)) + 
   coord_flip() +
-  labs(x = "Date of March", y = "Missing number", title = "Missing data quantity perday in March")
-
-ggplot() + 
-  geom_bar(stat = "identity", aes(x = names(missingStat_april), y = missingStat_april)) + 
-  coord_flip() +
-  labs(x = "Date of April", y = "Missing number", title = "Missing data quantity perday in April")
+  labs(x = "Date", y = "Missing number", title = "Missing data quantity perday in March and April")
 
 
 ##################################### findings #####################################
