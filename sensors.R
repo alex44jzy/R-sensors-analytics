@@ -199,7 +199,8 @@ data_all %>%
   scale_x_continuous(breaks = seq(0, 24)) + 
   labs(x = "Time (24 hour format)", y = "Light (lux)", title = "Light on March 3nd versus Time by sensors")
 
-# abnormal on Apr 14th
+# Abnormal on Apr 14th
+# Light on Apr 14th
 data_weekday %>%
   filter(month == 4) %>%
   ggplot(aes(x = timeDec, y = Light)) +
@@ -207,64 +208,6 @@ data_weekday %>%
   scale_color_discrete(name = "Date", labels = c("Other weekdays in April", "2017-04-14")) +
   scale_x_continuous(breaks = seq(0, 24)) + 
   labs(x = "Time (24 hour format)", y = "Light (lux)", title = "Abnormal working hours in 14th. April")
-
-# Noise around Apr 14th
-data_weekday %>%
-  filter(month == 4) %>%
-  ggplot(aes(x = timeDec, y = Noise)) +
-  geom_line(aes(color = as.factor(date <= '2017-04-14')), size = .3) +
-  # geom_smooth(aes(color = factor(date))) +
-  # scale_color_discrete(name = "Date", labels = c("Before Apr 14th", "After Apr 14th")) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise around April 14th")
-
-# Noise of Apr 16th
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = timeDec, y = Noise)) +
-  geom_line(size = .3) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise on April 16th")
-
-# Temperature of Apr 16th
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = timeDec, y = Temperature)) +
-  geom_line(size = .3) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Temperature (Centigrade)", title = "Temperature on April 16th")
-
-# Humidity of Apr 16th
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = timeDec, y = Humidity)) +
-  geom_line(size = .3) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Humidity", title = "Humidity on April 16th")
-
-# Light of Apr 16th
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = timeDec, y = Light)) +
-  geom_line(size = .3) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Light (lux)", title = "Light on April 16th")
-
-# Co2 of Apr 16th
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = timeDec, y = Co2)) +
-  geom_line(size = .3) +
-  scale_x_continuous(breaks = seq(0, 24)) + 
-  labs(x = "Time (24 hour format)", y = "Co2", title = "Co2 on April 16th")
-
-
-# Noise of 2 monthes March and April
-data_all %>%
-  ggplot(aes(x = date_time, y = Noise)) + 
-  geom_point(aes(color = as.factor(isWeekend)), size = .2) + 
-  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
-  labs(x = "Date", y = "Noise (dB)", title = "Noise versus Date")
 
 # Noise on Apr 14th
 data_weekday %>%
@@ -275,18 +218,79 @@ data_weekday %>%
   scale_x_continuous(breaks = seq(0, 24)) + 
   labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise on April 14th")
 
+# Noise around Apr 14th
+data_weekday %>%
+  filter(month == 4) %>%
+  ggplot(aes(x = timeDec, y = Noise)) +
+  geom_line(aes(color = as.factor(date <= '2017-04-14')), size = .3) +
+  # geom_smooth(aes(color = factor(date))) +
+  scale_color_discrete(name = "Date", labels = c("Before Apr 14th", "After Apr 14th")) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise around April 14th")
+
+# Noise of Apr 16th
+noise_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Noise)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Noise (dB)", title = "Noise on April 16th")
+
+# Temperature of Apr 16th
+temperature_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Temperature)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Temperature (Centigrade)", title = "Temperature on April 16th")
+
+# Humidity of Apr 16th
+humidity_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Humidity)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Humidity", title = "Humidity on April 16th")
+
+# Light of Apr 16th
+light_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Light)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Light (lux)", title = "Light on April 16th")
+
+# Co2 of Apr 16th
+co2_416 = data_all %>%
+  filter(date == '2017-04-16') %>%
+  ggplot(aes(x = timeDec, y = Co2)) +
+  geom_line(size = .3) +
+  scale_x_continuous(breaks = seq(0, 24)) + 
+  labs(x = "Time (24 hour format)", y = "Co2", title = "Co2 on April 16th")
+
+# Noise of 2 monthes March and April versus date
+data_all %>%
+  ggplot(aes(x = date_time, y = Noise)) + 
+  geom_point(aes(color = as.factor(isWeekend)), size = .2) + 
+  scale_color_discrete(name = "Day type", labels = c("Weekday", "Weekend")) +
+  labs(x = "Date", y = "Noise (dB)", title = "Noise versus Date")
+
+# Light on March and April points plot
 data_all %>%
   # filter(month == 4) %>%
   ggplot(aes(x = date_time, y = Light)) +
   geom_point(aes(color = as.factor(month)), size = .5) + 
-  # scale_color_discrete(name = "Month", labels = c("March", "April")) +
+  scale_color_discrete(name = "Month", labels = c("March", "April")) +
   labs(x = "Date", y = "Light (lux)", title = "Weekday Luminance versus Date")
 
 # findings
+# sensor locations different 4.26 humidity between different sensors
 data_weekday %>%
-  filter(date == "2017-03-22" & date <= "2017-03-25") %>%
-  ggplot(aes(x = timeDec, y = Light)) + 
-  geom_line(aes(color = as.factor(date)), size = .3)
+  filter(date == "2017-04-26") %>%
+  ggplot(aes(x = timeDec, y = Humidity)) + 
+  geom_line(aes(color = as.factor(unitid)), size = .3) + 
+  scale_color_discrete(name = "Sensor") +
+  labs(x = "Time (24 hour format)", y = "Humidity (%)", title = "Humidity of Apr 26th versus time by sensors")
 
 
 ## abnormal values exploration - scatterplot
