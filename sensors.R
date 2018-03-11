@@ -288,8 +288,6 @@ data_weekday %>%
   geom_line(aes(color = as.factor(date)), size = .3)
 
 
-
-
 ## abnormal values exploration - scatterplot
 library(gridExtra)
 scatterplot_Humidity = data_all %>%
