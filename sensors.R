@@ -266,7 +266,7 @@ data_all %>%
   labs(x = "Time (24 hour format)", y = "Co2", title = "Co2 on April 16th")
 
 
-# Noise of 2 monthes
+# Noise of 2 monthes March and April
 data_all %>%
   ggplot(aes(x = date_time, y = Noise)) + 
   geom_point(aes(color = as.factor(isWeekend)), size = .2) + 
