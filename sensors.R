@@ -171,9 +171,9 @@ data_weekday %>%
 
 
 
-## scatterplot for abnormal values exploration
+## abnormal values exploration - scatterplot
 library(gridExtra)
-a = data_all %>%
+scatterplot_Humidity = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Humidity, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -181,7 +181,7 @@ a = data_all %>%
   labs(x = "Time (24 hour format)", y = "Humidity", title = "Humidity versus Time") +
   theme(legend.position="none")
 
-b = data_all %>%
+scatterplot_Light = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Light, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -189,7 +189,7 @@ b = data_all %>%
   labs(x = "Time (24 hour format)", y = "Light", title = "Light versus Time") +
   theme(legend.position="none")
 
-c = data_all %>%
+scatterplot_Co2 = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Co2, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -197,7 +197,7 @@ c = data_all %>%
   labs(x = "Time (24 hour format)", y = "CO2", title = "CO2 versus Time") +
   theme(legend.position="none")
 
-d = data_all %>%
+scatterplot_VOC = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = VOC, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -205,7 +205,7 @@ d = data_all %>%
   labs(x = "Time (24 hour format)", y = "VOC", title = "VOC versus Time") +
   theme(legend.position="none")
 
-e = data_all %>%
+scatterplot_Temperature = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Temperature, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -213,7 +213,7 @@ e = data_all %>%
   labs(x = "Time (24 hour format)", y = "Temperature", title = "Temperature versus Time") +
   theme(legend.position="none")
 
-f = data_all %>%
+scatterplot_Noise = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Noise, fill = factor(date))) +
   geom_point(aes(color = factor(date))) + 
@@ -221,7 +221,7 @@ f = data_all %>%
   labs(x = "Time (24 hour format)", y = "Noise", title = "Noise versus Time") +
   theme(legend.position="none")
 
-grid.arrange(a, b, c, d, e, f, ncol = 3, nrow = 2)
+grid.arrange(scatterplot_Humidity, scatterplot_Light, scatterplot_Co2, scatterplot_VOC, scatterplot_Temperature, scatterplot_Humidity, ncol = 3, nrow = 2)
 
 
 
@@ -238,20 +238,6 @@ humidity %>%
   scale_x_continuous(breaks = seq(0, 24)) +
   labs(x = "Time (24 hour format)", y = "Humidity", title = "Median Humidity versus Time" )
 
-
-data_all %>%
-  filter(date == '2017-04-16') %>%
-  ggplot(aes(x = date_time, y = Temperature, fill = unitid)) +
-  geom_line(aes(color = unitid)) +
-  scale_x_continuous(breaks = seq(0, 24)) +
-  labs(x = "Time (24 hour format)", y = "CO2(ppm)", title = "CO2 versus Time (21th April - 27th April)" )
-
-data_all %>%
-  filter(date >= '2017-03-22' & date <= '2017-03-23') %>%
-  ggplot(aes(x = date_time, y = Light, fill = unitid)) +
-  geom_point(aes(color = unitid)) +
-  scale_x_continuous(breaks = seq(0, 24)) +
-  labs(x = "Time (24 hour format)", y = "CO2(ppm)", title = "CO2 versus Time (21th April - 27th April)" )
 
 
 # 3.9 Carbon Dioxide and VOC on 25th April
