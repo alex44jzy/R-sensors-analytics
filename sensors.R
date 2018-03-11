@@ -39,7 +39,6 @@ convertFromTimeToDecimal <- function(time) {
   return (timedec)
 }
 
-
 data_march = data_march %>%
   mutate(date = as.Date(.$date_time)) %>%
   mutate(time = format(.$date_time, "%H:%M")) %>%
@@ -300,6 +299,15 @@ voc_416 = data_all %>%
 # combine 6 subplots into one grid.
 grid.arrange(noise_416, temperature_416, humidity_416, light_416, co2_416, voc_416, ncol = 3, nrow = 2)
 
+# CO2 versus date (April), add the split line on Apr 16th.
+data_all %>%
+  filter(month == 4) %>%
+  ggplot(aes(x = date_time, y = Co2)) + 
+  geom_line(size = .3) +
+  geom_vline(xintercept = as_datetime("2017-04-16 06:00:00"), color = "red") + 
+  geom_text(aes(as_datetime("2017-04-12 06:00:00"), 500, label = "Apr 16, 6am"), size = 5, colour = "red") + 
+  labs(x = "Date", y = "CO2 (ppm)", title = "CO2 versus Date (April)")
+  
 
 # ======================================================================================================
 # Light on March and April points plot
@@ -315,8 +323,6 @@ data_all %>%
   ggplot(aes(x = timeDec, y = Light)) +
   geom_point() 
 
-
-
 # findings
 # sensor locations different 4.26 humidity between different sensors
 data_weekday %>%
@@ -328,7 +334,6 @@ data_weekday %>%
 
 
 ## abnormal values exploration - scatterplot
-
 scatterplot_Humidity = data_all %>%
   # filter(date == '2017-03-02') %>%
   ggplot(aes(x = timeDec, y = Humidity, fill = factor(date))) +
